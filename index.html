@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Automação de Planilha</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@600&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@600&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@600&family=Poppins&display=swap" rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
+        <link rel="stylesheet" href="style.css">
+        <link rel="shortcut icon" href="imgs/planilha.png">
+        
+    </head>
+    <body>
+        <header>
+            <div id="icone">
+                <img src="imgs/planilha.png" alt="ícone de planilha" id="icone-header">
+            </div>
+            <h1>Automação da Planilha de Quantificação de Material</h1>
+        </header>
+        <main>
+            <div class="card">
+                <div class="card-header">
+                    Dados de entrada para cálculo da "Planilha Resultado"
+                </div>
+                <div class="card-body">
+                    <p>O sistema Automação da planilha de quantificação de material permite, a partir dos
+                    dados inseridos a seguir, a construção da planilha de quantificação de material de 
+                    infraestrutura de rede local.
+                    </p>
+                    <form>
+                        <div class="mb-3">
+                            <label for="numeroPavimentos" class="form-label">Número de pavimentos da edificação</label>
+                            <input type="text" class="form-control" id="numeroPavimentos">
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="numeroPontosConexao" class="form-label">Número de pontos de conexão de rede</label>
+                            <input type="text" class="form-control" id="numeroPontosConexao">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="medidaLance" class="form-label">Medida básica do lance de cabo de MH</label>
+                            <input type="text" class="form-control" id="medidaLance">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="categoriaCabo" class="form-label">Categoria do cabo</label>
+                            <input type="text" class="form-control" id="categoriaCabo">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="existenciaBackbone" class="form-label">Existência de backbone</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" value="true" name="existenciaBackbone" id="flexRadioDefault1" onclick="ativaVisibilidade()">
+                                <label class="form-check-label" for="sim">
+                                    Sim
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" value="false" name="existenciaBackbone" id="flexRadioDefault2" onclick="desativaVisibilidade()">
+                                <label class="form-check-label" for="flexRadioDefault2">
+                                    Não
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="backbone" class="form-label">Backbone</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="" name="backbone" id="backbonePrimario" disabled>
+                                <label class="form-check-label" for="primario" disabled>
+                                    Primário
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="" name="backbone" id="backboneSecundario" disabled> 
+                                <label class="form-check-label" for="secundario">
+                                    Secundário
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="tipoCaboOptico" class="form-label">Tipo de cabo óptico</label>
+                            <input type="text" class="form-control" id="tipoCaboOptico" disabled> 
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="quantidadeFibras" class="form-label">Quantidade de fibras do cabo óptico</label>
+                            <input type="text" class="form-control" id="quantidadeFibras" disabled>
+                        </div>
+                        <button type="submit" class="btn btn-primary" onclick="gerarPlanilha(event)">Gerar Planilha</button>
+                      </form>
+                </div>
+            </div>
+
+            <section id="planilha">
+                <h3>Lista de Material</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Descrição</th><th>Item</th><th>Qtde.</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="3" id="cabecalho">MATERIAIS DE CABEAMENTO DE REDE (INFRAESTRUTURA)</td>
+                            </tr>
+                            <tr>
+                                <td id="descricaoCaboUTP">Cabo UTP par trançado (....) (MH)</td><td>cxs</td><td id="caboUTP"></td>
+                            </tr>
+                            <tr>
+                                <td id="descricaoTomadaRJ45">Tomada RJ45 femêa (....)</td><td>unid.</td><td id="tomadaRJ45"></td>
+                            </tr>
+                            <tr>
+                                <td>Espelhos 4x4 - 2 furações/entradas</td><td>unid.</td><td id="espelhos"></td>
+                            </tr>
+                            <tr>
+                                <td id="descricaoPatchCord">Patch Cord (....), azul, 3m</td><td>unid.</td><td id="patchCord"></td>
+                            </tr>
+                            <tr>
+                                <td id="descricaoPatchPanel">Patch Panel (....), 24 portas (PPMH - Patch de Malha Horizontal)</td><td>unid.</td><td id="patchPanel"></td>
+                            </tr>
+                            <tr>
+                                <td>Organizador de cabo frontal - 1U</td><td>unid.</td><td id="organizador"></td>
+                            </tr>
+                            <tr>
+                                <td>Bandeja fixa</td><td>unid.</td><td id="bandeja"></td>
+                            </tr>
+                            <tr>
+                                <td id="descricaoPatchCable">Patch Cable (....), azul - 2,5m</td><td>unid.</td><td id="patchCable"></td>
+                            </tr>
+                            <tr>
+                                <td id="descricaoRack">Rack fechado, largura de 19" e tamanho 32U</td><td>unid.</td><td id="rack"></td>
+                            </tr>
+                            <tr>
+                                <td>Exaustor 19"</td><td>unid.</td><td id="exaustor"></td>
+                            </tr>
+
+                            
+                                <tr class="tabelaBackbone">
+                                    <td colspan="3" id="cabecalho">Backbone Óptico</td>
+                                </tr>
+                                <tr class="tabelaBackbone">
+                                    <td id="descricaoCaboFibra">Cabo de Fibra Óptica Tight Buffer (FOMMIG) 50 x 125µm - com 8 fibras</td><td>m</td><td id="caboFibra"></td>
+                                </tr>
+                                <tr class="tabelaBackbone">
+                                    <td>Chassi DIO (Distribuido Interno Óptico) com 24 portas - 1U - 19"</td><td>unid.</td><td></td>
+                                </tr>
+                                <tr class="tabelaBackbone">
+                                    <td>Acoplador óptico 50 x 125µm - MM - LC - duplo</td><td>unid.</td><td></td>
+                                </tr>
+                                <tr class="tabelaBackbone">
+                                    <td>Acoplador óptico 9 x 125µm - SM - LC - duplo</td><td>unid.</td><td></td>
+                                </tr>
+                                <tr class="tabelaBackbone">
+                                    <td>Bandeja para emenda de fibra no DIO - (comporta até 12 emendas)</td><td>unid.</td><td></td>
+                                </tr>
+                                <tr class="tabelaBackbone">
+                                    <td>Terminador Óptico para 8 fibras AJUSTAR</td><td>unid.</td><td></td>
+                                </tr>
+                                <tr class="tabelaBackbone">
+                                    <td>Pig tail 50 x 125µm - MM - 1,5m - simples - conector LC</td><td>unid.</td><td></td>
+                                </tr>
+                                <tr class="tabelaBackbone">
+                                    <td>Pig tail 50 x 125µm - MM - 3,0m - duplo - conector LC</td><td>unid.</td><td></td>
+                                </tr>
+                                <tr class="tabelaBackbone">
+                                    <td>Cordão Óptico 50 x 125µm - MM - 3m - duplo - conector LC</td><td>unid.</td><td></td>
+                                </tr>
+                                <tr class="tabelaBackbone">
+                                    <td>Pig tail 50 x 125µm - SM - 1,5m - simples - conector LC</td><td>unid.</td><td></td>
+                                </tr>
+                                <tr class="tabelaBackbone">
+                                    <td>Cordão Óptico 9 x 125µm - SM - 3m - duplo - conector LC</td><td>unid.</td><td></td>
+                                </tr>
+                            
+                            
+                            <tr>
+                                <td colspan="3" id="cabecalho">MISCELÂNEA</td>
+                            </tr>
+                            <tr>
+                                <td>Etiquetas de identficação da porta do Patch Panel</td><td>unid.</td><td id="etiquetaPorta"></td>
+                            </tr>
+                            <tr>
+                                <td>Etiquetas de identficação Patch Cable</td><td>unid.</td><td id="etiquetaPatchCable"></td>
+                            </tr>
+                            <tr>
+                                <td>Etiquetas de identficação do Patch Panel</td><td>unid.</td><td id="etiquetaPatchPanel"></td>
+                            </tr>
+                            <tr>
+                                <td>Etiquetas de identificação Tomadas e Espelhos</td><td>unid.</td><td id="etiquetaTomadasEspellhos"></td>
+                            </tr>
+                            <tr>
+                                <td>Etiquetas de identificação Cabos UTP - MH</td><td>unid.</td><td id="etiquetaCabosUTP"></td>
+                            </tr>
+                            <tr class="tabelaBackbone">
+                                <td>Etiqueta para os cordões ópticos e pigtail´s (TO)</td><td>unid.</td><td id="etiquetaCordoes"></td>
+                            </tr>
+                            <tr class="tabelaBackbone">
+                                <td>Etiqueta para Portas do DIO</td><td>unid.</td><td id="etiquetaPortasDio"></td>
+                            </tr>
+                            <tr>
+                                <td>Abraçadeiras plásticas, pacote 100 unidades</td><td>unid.</td><td id="abracadeirasPlasticas"></td>
+                            </tr>
+                            <tr>
+                                <td>Abraçadeiras de velcro, rolo 3 m</td><td>unid.</td><td id="abracadeirasVelcro"></td>
+                            </tr>
+                            <tr>
+                                <td>Régua com 6 tomadas - filtro de linha</td><td>unid.</td><td id="reguaTomadas"></td>
+                            </tr>
+                            <!--
+                            <tr>
+                                <td>Régua de fechamento - 1U</td><td>unid.</td><td id="reguaFechamento"></td>
+                            </tr>
+                            -->
+                            <tr>
+                                <td>Porca Gaiola - pacote com 10 unidades</td><td>unid.</td><td id="portaGaiola"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+            </section>
+        </main>
+        <footer>
+            <p>Trabalho Prático - Automação da planilha de quantificação de material</p>
+            <P>Nome: Evelyn Laura Alves de Souza Costa</P>
+            <p>INF 3A</p>
+        </footer>
+        <script src="visibilidade.js"></script>
+        <script src="calculos.js"></script>
+    </body>
+</html>
