@@ -198,5 +198,3 @@ function gerarPlanilha(event) {
 
     // Cabo de Fibra Óptica
 }
-
-

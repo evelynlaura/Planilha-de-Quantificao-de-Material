@@ -75,3 +75,9 @@ td {
 #cabecalho, th {
     background-color: silver;
 }
+
+#button-info {
+    position: fixed;
+    left: 3%;
+    bottom: 5%;
+}
